@@ -23,7 +23,7 @@ export default function InterviewPage() {
 
   useEffect(() => {
     if (!id) return;
-    
+
     const initializeSession = async () => {
       const stored = localStorage.getItem(`session_${id}`);
       if (stored) {
@@ -43,7 +43,7 @@ export default function InterviewPage() {
         const data = await interviewApi.getSession(String(id));
         if (data.turns && data.turns.length > 0) {
           const lastTurn = data.turns[data.turns.length - 1];
-          setTurnId(lastTurn.id); 
+          setTurnId(lastTurn.id);
           setQuestion(lastTurn.question);
           setContext(lastTurn.context || []);
           setTurnNumber(data.turns.length);
@@ -62,12 +62,12 @@ export default function InterviewPage() {
     setError("");
 
     try {
-      const data = await interviewApi.submitAnswer({ 
-        session_id: String(id), 
-        turn_id: turnId, 
-        answer 
+      const data = await interviewApi.submitAnswer({
+        session_id: String(id),
+        turn_id: turnId,
+        answer
       });
-      
+
       if (data.session_complete) {
         router.push(`/results/${id}`);
         return;
@@ -80,7 +80,7 @@ export default function InterviewPage() {
       setContext(data.source_context || []);
       setDifficulty(data.difficulty || "medium");
       setTurnNumber(data.turn_number || 1);
-      
+
       // Scroll to top when new question arrives
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch {
@@ -105,17 +105,16 @@ export default function InterviewPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold px-2 py-1 bg-accent rounded text-muted-foreground">TURN {turnNumber} / 8</span>
-            <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${
-              difficulty === "hard" ? "bg-red-500/20 text-red-500" :
+            <span className="text-xs font-bold px-2 py-1 bg-accent rounded text-muted-foreground">TURN {turnNumber} / 4</span>
+            <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${difficulty === "hard" ? "bg-red-500/20 text-red-500" :
               difficulty === "easy" ? "bg-green-500/20 text-green-500" : "bg-yellow-500/20 text-yellow-500"
-            }`}>
+              }`}>
               {difficulty}
             </span>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-12 space-y-8 pb-32">
+        <div className="flex-1 overflow-y-scroll p-6 md:p-12 space-y-8 pb-10">
           {error && (
             <div className="max-w-3xl mx-auto flex items-center gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm">
               <AlertCircle size={18} />
@@ -147,10 +146,11 @@ export default function InterviewPage() {
               </div>
             </div>
           )}
+
         </div>
 
         {/* Input Area */}
-        <div className="fixed bottom-0 left-0 right-0 md:left-0 md:w-[calc(100%-20rem)] bg-background/80 backdrop-blur-xl border-t border-border p-4 z-20">
+        <div className="bg-card/50 backdrop-blur-xl border-t border-border p-4 z-20">
           <div className="max-w-3xl mx-auto relative">
             <textarea
               className="w-full bg-accent/50 border border-input rounded-2xl p-4 pr-16 text-foreground resize-none h-24 md:h-32 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/50"
@@ -163,9 +163,9 @@ export default function InterviewPage() {
               }}
             />
             <div className="absolute bottom-4 right-4 flex items-center gap-3">
-               <p className="hidden md:block text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Ctrl + Enter to send</p>
-               <Button 
-                onClick={submitAnswer} 
+              <p className="hidden md:block text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Ctrl + Enter to send</p>
+              <Button
+                onClick={submitAnswer}
                 disabled={loading || !answer.trim()}
                 size="icon"
                 className="rounded-xl w-10 h-10 shadow-lg shadow-primary/20"
@@ -179,7 +179,7 @@ export default function InterviewPage() {
 
       {/* Traceability Side Panel */}
       <aside className="w-full md:w-80 border-t md:border-t-0 md:border-l border-border bg-card overflow-y-auto max-h-screen">
-        <div className="p-6 sticky top-0 bg-card border-b border-border z-10 flex items-center justify-between">
+        <div className="h-16 px-6 sticky top-0 bg-card border-b border-border z-10 flex items-center justify-between">
           <h3 className="text-sm font-bold flex items-center gap-2">
             <BookOpen size={16} className="text-primary" />
             SOURCE CONTEXT
@@ -188,10 +188,10 @@ export default function InterviewPage() {
         </div>
         <div className="p-4 space-y-4">
           {!context || context.length === 0 ? (
-             <div className="text-center py-20 text-muted-foreground px-6 space-y-2">
-                <BookOpen size={32} className="mx-auto opacity-20" />
-                <p className="text-xs font-medium">Wait for the next question to see source context.</p>
-             </div>
+            <div className="text-center py-20 text-muted-foreground px-6 space-y-2">
+              <BookOpen size={32} className="mx-auto opacity-20" />
+              <p className="text-xs font-medium">Wait for the next question to see source context.</p>
+            </div>
           ) : (
             context.map((chunk, i) => (
               <Card key={i} className="bg-accent/30 border-none hover:bg-accent/50 transition-colors">

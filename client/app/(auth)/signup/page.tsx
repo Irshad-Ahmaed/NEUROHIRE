@@ -16,6 +16,14 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useState(() => {
+    authApi.me().then(data => {
+      if (data.authenticated) {
+        router.push("/dashboard");
+      }
+    });
+  });
+
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);

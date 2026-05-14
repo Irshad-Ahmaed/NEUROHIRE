@@ -36,36 +36,30 @@ def retrieve(query: str, role: str = None, top_k: int = TOP_K) -> list[dict]:
     if not vector:
         return []
 
-    # Build filter if role is provided
-    search_filter = None
-    if role:
-        search_filter = Filter(
-            must=[
-                FieldCondition(
-                    key="roles",
-                    match=MatchValue(value=role)
-                )
-            ]
-        )
+    # Role filtering is omitted; semantic similarity handles context relevance.
 
     try:
         results = qdrant.search(
             collection_name=COLLECTION_NAME,
             query_vector=vector,
             limit=top_k,
-            query_filter=search_filter,
             with_payload=True,
         )
         
-        return [
-            {
-                "text": r.payload["text"],
-                "book": r.payload["book"],
-                "chunk_index": r.payload["chunk_index"],
-                "score": r.score,
-            }
-            for r in results
-        ]
+        seen_texts = set()
+        unique_chunks = []
+        for r in results:
+            text = r.payload["text"]
+            if text not in seen_texts:
+                seen_texts.add(text)
+                unique_chunks.append({
+                    "text": text,
+                    "book": r.payload["book"],
+                    "chunk_index": r.payload["chunk_index"],
+                    "score": r.score,
+                })
+        
+        return unique_chunks
     except Exception as e:
         print(f"Search error: {e}")
         return []

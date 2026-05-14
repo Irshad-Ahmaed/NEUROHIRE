@@ -108,7 +108,7 @@ def session_answer():
     session_id = uuid.UUID(data["session_id"])
     turn_id = uuid.UUID(data["turn_id"])
     answer_text = data.get("answer", "")
-    MAX_TURNS = 8
+    MAX_TURNS = 4
 
     with SessionLocal() as db_session:
         interview_session = db_session.query(InterviewSession).filter_by(id=session_id).first()

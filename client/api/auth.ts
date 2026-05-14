@@ -35,4 +35,10 @@ export const authApi = {
       method: "GET",
     });
   },
+  
+  me: () => {
+    return apiClient<{ authenticated: boolean; user?: LoginResponse["user"] }>("/me", {
+      method: "GET",
+    });
+  },
 };

@@ -41,10 +41,6 @@ export default function HeroSection({ targetRef, opacity, scale }: HeroSectionPr
               The Engine
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
             </a>
-            <a href="#about" className="hover:text-foreground transition-colors relative group">
-              About
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-            </a>
           </div>
 
           <div className="flex items-center gap-4">

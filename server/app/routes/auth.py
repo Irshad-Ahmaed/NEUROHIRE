@@ -48,3 +48,10 @@ def api_signup():
 def api_logout():
     session.pop("user", None)
     return jsonify({"message": "Logged out"}), 200
+
+@auth_bp.route("/me")
+def get_current_user():
+    user = session.get("user")
+    if not user:
+        return jsonify({"authenticated": False}), 200
+    return jsonify({"authenticated": True, "user": user}), 200

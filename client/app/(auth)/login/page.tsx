@@ -15,6 +15,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  useState(() => {
+    authApi.me().then(data => {
+      if (data.authenticated) {
+        router.push("/dashboard");
+      }
+    });
+  });
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
