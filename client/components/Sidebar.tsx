@@ -13,12 +13,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { authApi } from "@/api/auth";
+import { useAuth } from "@/lib/auth-context";
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const { logout, user } = useAuth();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -39,7 +40,7 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await authApi.logout();
+      await logout();
       router.push("/login");
     } catch (err) {
       console.error("Logout failed", err);
@@ -105,8 +106,12 @@ export function Sidebar() {
               <User size={18} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Candidate</p>
-              <p className="text-xs text-muted-foreground truncate">Free Plan</p>
+              <p className="text-sm font-medium truncate">
+                {user?.email ?? "Candidate"}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user ? "Authenticated Session" : "Free Plan"}
+              </p>
             </div>
           </div>
           <Button

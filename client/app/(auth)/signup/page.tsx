@@ -7,22 +7,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cpu, ArrowLeft } from "lucide-react";
-import { authApi } from "@/api/auth";
+import { useAuth } from "@/lib/auth-context";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { signup } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  useState(() => {
-    authApi.me().then(data => {
-      if (data.authenticated) {
-        router.push("/dashboard");
-      }
-    });
-  });
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +27,7 @@ export default function SignupPage() {
     form.append("password", password);
 
     try {
-      await authApi.signup(form);
+      await signup(form);
       router.push("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create account");

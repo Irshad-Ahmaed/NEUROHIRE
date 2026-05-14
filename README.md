@@ -58,6 +58,15 @@ NeuroHire employs a decoupled client-server architecture designed for scalabilit
 - **RAG Pipeline**: When a user submits an answer, the server queries a **Qdrant Vector Database** for semantic context from embedded textbooks. This context, alongside the user's input, is routed to the **Gemini AI Engine** to evaluate the answer and dynamically generate the next question.
 - **Data Persistence**: Managed via SQLAlchemy mapped to a cloud-hosted TiDB cluster, tracking all users, sessions, and turn-by-turn interview history.
 
+### Frontend Auth Architecture
+
+The frontend uses a two-layer auth model:
+
+- **Server-side route protection**: the Next.js route-group layouts validate the session before protected pages render.
+- **Client-side auth context**: a shared `AuthProvider` manages `user`, `isAuthenticated`, `isLoading`, and auth actions (`login`, `signup`, `logout`, `refreshUser`).
+
+This keeps protected dashboard pages from leaking content while preserving a smooth client-side UX after hydration.
+
 ### Step-by-Step Flow
 Here is a detailed breakdown of the diagram above:
 
@@ -124,6 +133,16 @@ cd client
 npm install
 npm run dev
 ```
+
+Create a `.env` file in `/client`:
+```env
+NEXT_PUBLIC_API_BASE_URL=/api
+API_SERVER_BASE_URL=http://127.0.0.1:5000/api
+```
+
+Frontend env notes:
+- `NEXT_PUBLIC_API_BASE_URL` is used by browser requests.
+- `API_SERVER_BASE_URL` is used by server-side auth checks in Next.js layouts.
 
 The application will be available at `http://localhost:3000`.
 

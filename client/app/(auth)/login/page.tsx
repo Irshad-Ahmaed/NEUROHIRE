@@ -7,22 +7,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cpu, ArrowLeft } from "lucide-react";
-import { authApi } from "@/api/auth";
+import { useAuth } from "@/lib/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
-  useState(() => {
-    authApi.me().then(data => {
-      if (data.authenticated) {
-        router.push("/dashboard");
-      }
-    });
-  });
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +27,7 @@ export default function LoginPage() {
     form.append("password", password);
 
     try {
-      await authApi.login(form);
+      await login(form);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid email or password");

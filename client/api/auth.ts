@@ -1,15 +1,22 @@
 import { apiClient } from "./client";
 
+export interface AuthUser {
+  id: string;
+  email: string;
+}
+
 export interface LoginResponse {
   message?: string;
-  user?: {
-    id: string;
-    email: string;
-  };
+  user?: AuthUser;
 }
 
 export interface SignupResponse {
   message?: string;
+}
+
+export interface MeResponse {
+  authenticated: boolean;
+  user?: AuthUser;
 }
 
 /**
@@ -37,7 +44,7 @@ export const authApi = {
   },
   
   me: () => {
-    return apiClient<{ authenticated: boolean; user?: LoginResponse["user"] }>("/me", {
+    return apiClient<MeResponse>("/me", {
       method: "GET",
     });
   },
